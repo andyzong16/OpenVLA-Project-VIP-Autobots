@@ -1,0 +1,85 @@
+selected: adaptive # choose among {adaptive, flexible, suction}
+
+adaptive:
+  # The gripper should be installed so that when the arm is at home position,
+  # The gripper's claws are facing forward, and the actuator housing is halfway between top and left.
+  # For reference, the display screen on the base faces backward.
+  id: adaptive
+  command_range: [1, 100]
+  max_length: 116
+  T_FG: 
+    # The gripper frame shares origin with the flange frame and is orientated as follows
+    # z = up (the actuator housing's direction), y = forward (the finger's direction), x = left.
+    - [ 0.70710678,  0.0,        -0.70710678,  0.0]
+    - [-0.70710678,  0.0,        -0.70710678,  0.0]
+    - [ 0.0,         1.0,         0.0,         0.0]
+    - [ 0.0,         0.0,         0.0,         1.0]
+  fingertip_dim:
+    width: 23 # the side perpendicular to flange surface
+    height: 20 # the side parallel to flange surface
+  default_tcp: [0, 88, -12]
+  default_finger_length: 11
+
+  # Since the TCP is located above the fingertips, setting the TCP too low may result in 
+  # the fingers hitting the table before reaching the object. Hence, TCP will be 
+  # lowerbounded by a threshold height.
+  min_grip_height: 45
+
+  others:
+    speed: 20
+    tcp_model: # [gripper open (%), TCP xyz in gripper frame, finger length (mm), finger gap (mm)]
+      # TCP is the center between the two fingers.
+      # The first value is the gripper opening percentage.
+      # The second is the vertical distance from the flange surface to the TCP.
+      # The third is the finger length — i.e, the distance between TCP and the deepest point between fingers.
+      # The fourth is the distance between fingertips.
+      # if the TCP moves lower than this, the gripper fingers would contact the object top.
+      0:    [[-12, 0, 103], 31, 3]
+      10:   [[-12, 0, 103], 31, 3]
+      20:   [[-12, 0, 102], 30, 8]
+      30:   [[-12, 0, 100], 28, 13]
+      40:   [[-12, 0, 98], 26, 19]
+      50:   [[-12, 0, 96], 24, 24]
+      60:   [[-12, 0, 94], 22, 28]
+      70:   [[-12, 0, 91], 19, 32]
+      80:   [[-12, 0, 88], 16, 36]
+      90:   [[-12, 0, 85], 13, 39]
+      100:  [[-12, 0, 83], 11, 42]
+
+flexible:
+  id: flexible
+  command_range: [1, 100]
+  max_length: 135
+  T_FG: 
+    - [ 0.70710678,  0.0,        -0.70710678,  0.0]
+    - [-0.70710678,  0.0,        -0.70710678,  0.0]
+    - [ 0.0,         1.0,         0.0,         0.0]
+    - [ 0.0,         0.0,         0.0,         1.0]
+  fingertip_dim:
+    right: 15 # the far side
+    left: 19 # the close side
+    width: 50 # The side perpendicular to flange surface
+  default_tcp: [0, 137, -8]
+  default_finger_length: 45
+  min_grip_height: 70
+  others:
+    speed: 20  
+
+
+suction:
+  id: suction
+  command_range: [1, 0] # We want the lower end to correspond to closed position (the object capturing position)
+  max_length: 92
+  T_FG: 
+    - [ 0.70710678,  0.0,        -0.70710678,  0.0]
+    - [-0.70710678,  0.0,        -0.70710678,  0.0]
+    - [ 0.0,         1.0,         0.0,         0.0]
+    - [ 0.0,         0.0,         0.0,         1.0]
+  fingertip_dim:
+    diameter: 25
+  default_tcp: [0, 80, 0]
+  default_finger_length: 0
+  min_grip_height: 0
+  others:
+    pump_pin: 2
+    valve_pin: 5
