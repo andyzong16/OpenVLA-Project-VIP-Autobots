@@ -7,7 +7,6 @@ import time
 import camera.cv2cam as cam
 import cv2
 import torch
-from PIL import Image
 # import manipulator as manip
 import numpy as np
 
